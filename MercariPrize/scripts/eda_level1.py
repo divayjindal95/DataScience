@@ -75,6 +75,7 @@ preds = lr.predict(test_data[trn_columns])
 print(np.sqrt(np.mean(np.square(preds-test_data[targ]))))
 '''
 
+
 '''
 gbr=GradientBoostingRegressor()
 gbr.fit(train_data[trn_columns],train_data[targ])
@@ -88,13 +89,20 @@ preds = mlp.predict(test_data[trn_columns])
 print(np.sqrt(np.mean(np.square(preds-test_data[targ]))))
 '''
 
+'''
 abr=AdaBoostRegressor()
 abr.fit(train_data[trn_columns],train_data[targ])
 preds = abr.predict(test_data[trn_columns])
 print(preds)
 print(np.sqrt(np.mean(np.square(preds-test_data[targ]))))
-
-
+'''
+'''
+from xgboost import XGBClassifier
+xgb = XGBClassifier()
+xgb.fit(train_data[trn_columns],train_data[targ])
+preds = xgb.predict(test_data[trn_columns])
+print(np.sqrt(np.mean(np.square(preds-test_data[targ]))))
+'''
 
 '''
 sub=pd.DataFrame()
@@ -103,3 +111,20 @@ sub['price']=np.exp(preds)-1
 #print(sub.test_id)
 sub.to_csv("sample_submission.csv",index=False)
 '''
+
+print("Training...")
+import lightgbm as lgb
+print('Start training...')
+# train
+
+gbm = lgb.LGBMRegressor(objective='regression',
+                        num_leaves=31,
+                        learning_rate=0.05,
+                        n_estimators=10)
+gbm.fit(train_data[trn_columns],train_data.log_price,
+        eval_set=[(test_data[trn_columns],test_data.log_price)],
+        eval_metric='l1',
+        early_stopping_rounds=5)
+print("predicting...")
+preds= gbm.predict(test_data[trn_columns])
+print(np.sqrt(np.mean(np.square(preds-test_data[targ]))))
