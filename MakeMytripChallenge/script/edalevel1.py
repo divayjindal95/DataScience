@@ -4,7 +4,10 @@ import matplotlib.pylab as plt
 
 
 train_data = pd.read_csv("../data/train.csv")
+train_data_len=len(train_data)
 test_data=pd.read_csv("../data/test.csv")
+test_data_len=len(test_data)
+data=pd.concat(train_data,test_data)
 ## pd.read_csv("../data/test.csv")
 
 
@@ -67,18 +70,8 @@ print train_data.F.value_counts()
 print test_data.F.value_counts()
 
 
-print train_data.G.value_counts()
-print train_data.I.value_counts()
-print train_data.J.value_counts()
-print train_data.L.value_counts()
-print train_data.M.value_counts()
-
-
-
-
-
-print test_data.G.value_counts()
-print test_data.I.value_counts()
-print test_data.J.value_counts()
-print test_data.L.value_counts()
-print test_data.M.value_counts()
+# print train_data.G.value_counts()
+# print train_data.I.value_counts()
+# print train_data.J.value_counts()
+# print train_data.L.value_counts()
+# print train_data.M.value_counts()
