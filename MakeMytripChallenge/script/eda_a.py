@@ -39,7 +39,6 @@ train_data.drop(train_data[train_data.isnull().sum(axis=1)>2].index)
 
 #mnb.fit(train_data[train_data.columns[1:-1]],train_data[train_data.A.notnull()].A)
 
-data_1=data.dropna()
 #le=LabelEncoder()
 #data_1.apply(le.fit)
 #print data_1.head()
@@ -53,14 +52,19 @@ def getint(data):
             nicedata[nicedata.columns[i]] = le.fit_transform(nicedata[nicedata.columns[i]])
             cls[nicedata.columns[i]]=le.classes_
     return nicedata,cls
+cols = ['C','H','I','J','K','L','M','O','P']
+data_1,dictcls=getint(train_data[cols])
 
-data_1,dictcls=getint(data_1)
 print data_1.head()
 print dictcls
-mnb = MultinomialNB()
-mnb.fit(data_1[data_1.columns[1:-1]],data_1[data_1.A.notnull()].A)
+
+
+
+
+#mnb = MultinomialNB()
+#mnb.fit(data_1[data_1.columns[1:-1]],data_1[data_1.A.notnull()].A)
 #mnb.predict(data[data.D.isnull()])
 
 
-print data[data.isnull().sum(axis=1)>2]
-print data[(data.I=='f') & (data.J=='f')& (data.K==0)& (data.L=='f')& (data.M=='p')]
+# print data[data.isnull().sum(axis=1)>2]
+# print data[(data.I=='f') & (data.J=='f')& (data.K==0)& (data.L=='f')& (data.M=='p')]
