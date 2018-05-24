@@ -25,7 +25,7 @@ test_data_len=len(test_data)
 
 
 def getint(data):
-    nicedata=data.dropna()
+    nicedata=data
     cls=dict()
     for i in xrange(len(nicedata.columns)):
         if data.dtypes[i]==object and data.columns[i]!='P':
@@ -34,21 +34,29 @@ def getint(data):
             cls[nicedata.columns[i]]=le.classes_
     return nicedata,cls
 
-print train_data.dtypes
-#print len(train_data)
-#print len(test_data)
-train_data=train_data.dropna()
-test_data=test_data.dropna()
+#train_data=train_data.dropna()
+#test_data=test_data.dropna()
 data=pd.concat([train_data,test_data])
-le=LabelEncoder()
+
+data.A=data.A.fillna(data['A'].mode()[0])
+data.D=data.D.fillna(data['D'].mode()[0])
+data.E=data.E.fillna(data['E'].mode()[0])
+data.G=data.G.fillna(data['G'].mode()[0])
+data.F=data.F.fillna(data['F'].mode()[0])
+data.B=data.A.fillna(data['B'].median())
+data.N=data.N.fillna(data['N'].median())
+
 data,cls=getint(data)
-#print data.head()
-
-
 
 data.O=np.log(data.O+1)
 data.H=np.log(data.H+1)
 data.K=np.log(data.K+1)
+data.N=np.log(data.N+1)
+data.C=np.log(data.C+1)
+
+data=pd.concat([data,pd.get_dummies(data.I,'I')],axis=1)
+data=pd.concat([data,pd.get_dummies(data.F,'F')],axis=1)
+#print data.describe().to_string()
 
 sc = StandardScaler()
 data.O=sc.fit_transform(np.reshape(data.O,(len(data.O),1)))
@@ -56,55 +64,34 @@ sc = StandardScaler()
 data.H=sc.fit_transform(np.reshape(data.H,(len(data.H),1)))
 sc = StandardScaler()
 data.K=sc.fit_transform(np.reshape(data.K,(len(data.K),1)))
-
+sc = StandardScaler()
+data.N=sc.fit_transform(np.reshape(data.N,(len(data.N),1)))
+sc = StandardScaler()
+data.C=sc.fit_transform(np.reshape(data.C,(len(data.C),1)))
+sc = StandardScaler()
+data.B=sc.fit_transform(np.reshape(data.B,(len(data.B),1)))
 
 
 fin_train_data=data.iloc[:len(train_data)]
 fin_test_data=data.iloc[len(train_data)+1:]
 
 
-#print len(train_data)
-#print len(test_data)
-#print train_data.columns
 
-trncols=[u'A', u'B', u'C', u'D', u'E', u'F', u'G', u'H', u'I', u'J', u'K',
-       u'L', u'M', u'N', u'O']
+trncols=[u'A', u'B', u'C', u'D', u'E', u'F', u'G', u'H', u'I', u'J', u'K', u'L',
+       u'M', u'N', u'O', u'I_0', u'I_1']
+# u'F_0', u'F_1', u'F_2',
+#        u'F_3', u'F_4', u'F_5', u'F_6', u'F_7', u'F_8', u'F_9', u'F_10',
+#        u'F_11', u'F_12', u'F_13'
 testcols=['P']
 
 X,x,Y,y=train_test_split(fin_train_data[trncols],fin_train_data[testcols])
 
-rfc=RandomForestClassifier()
-rfc.fit(X,Y)
-rfc.predict(x)
-print rfc.score(x,y)
-print rfc.feature_importances_
 
-gb=GradientBoostingClassifier()
-gb.fit(X,Y)
-print "gb",gb.score(x,y)
-print gb.feature_importances_
-
-
-# mnb = MultinomialNB()
-# mnb.fit(X,Y)
-# print mnb.score(x,y)
-
-# svc=SVC()
-# svc.fit(X,Y)
-# print svc.score(x,y)
-
+# gb=GradientBoostingClassifier()
+# gb.fit(X,Y)
+# print "gb",gb.score(x,y)
+# print gb.feature_importances_
 
 lr=LogisticRegression()
 lr.fit(X,Y)
 print "lr",lr.score(x,y)
-
-few_cols = ['C','N','I','O','B']
-gb=GradientBoostingClassifier()
-gb.fit(X[few_cols],Y)
-print "few",gb.score(x[few_cols],y)
-#print X[few_cols].head()
-#print fin_train_data.corr()[fin_train_data.corr()>0.5]
-
-lr=LogisticRegression()
-lr.fit(X[few_cols],Y)
-print "lr few",lr.score(x[few_cols],y)
