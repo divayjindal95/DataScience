@@ -13,10 +13,11 @@ from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.svm import SVC
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
-from sklearn.model_selection import train_test_split
+#from sklearn.model_selection import train_test_split
+from sklearn.cross_validation import train_test_split
 from sklearn.preprocessing import LabelEncoder
-from sklearn.model_selection import KFold
-
+#from sklearn.model_selection import KFold
+from sklearn.cross_validation import KFold
 train_data = pd.read_csv("../data/train.csv")
 train_data_len=len(train_data)
 test_data=pd.read_csv("../data/test.csv")
